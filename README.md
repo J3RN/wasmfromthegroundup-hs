@@ -5,6 +5,7 @@
 This is a collection of code from [WebAssembly from the Ground Up] ported from JavaScript and Ohm to Haskell.
 
 - Chapter 1: Minimum Viable Compiler
+  - [Void Lang](./01%20-%20Minimum%20Viable%20Compiler/Void.hs)
 
 ## Running the examples
 
