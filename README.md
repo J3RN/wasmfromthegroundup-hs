@@ -6,6 +6,7 @@ This is a collection of code from [WebAssembly from the Ground Up] ported from J
 
 - Chapter 1: Minimum Viable Compiler
   - [Void Lang](./01%20-%20Minimum%20Viable%20Compiler/Void.hs)
+  - [Nop Lang](./01%20-%20Minimum%20Viable%20Compiler/Nop.hs)
 
 ## Running the examples
 
