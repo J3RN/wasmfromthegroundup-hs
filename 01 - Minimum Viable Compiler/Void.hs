@@ -1,11 +1,10 @@
-import           Data.Binary.Put
-import qualified Data.ByteString.Lazy as B
-import           System.IO            (IOMode (WriteMode), withFile)
+import           Data.ByteString.Builder
+import           Prelude                 hiding (writeFile)
 
 main :: IO ()
-main = withFile "out.wasm" WriteMode (`B.hPut` runPut writeHeader)
+main = writeFile "out.wasm" header
 
-writeHeader :: Put
-writeHeader = magic >> version
-  where magic = putStringUtf8 "\0asm"
-        version = putWord32le 1
+header :: Builder
+header = magic <> version
+  where magic = stringUtf8 "\0asm"
+        version = word32LE 1
