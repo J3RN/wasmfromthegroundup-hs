@@ -1,4 +1,4 @@
-import           Data.Bits               ((.|.))
+import           Data.Bits
 import           Data.ByteString.Builder
 import qualified Data.ByteString.Lazy    as B
 import           Data.Int                (Int32)
@@ -144,10 +144,10 @@ u32 = uleb128
 -- Theoretically this should be limited to only unsigned Integrals,
 -- but no such typeclass exists AFAIK and it feels excessive to define
 -- one.
-uleb128 :: Integral a => a -> Builder
-uleb128 n' = case n' `quotRem` 128 of
-               (0   , byte) -> word8 (toByte byte)
-               (rest, byte) -> word8 (toByte byte .|. 0x80) <> uleb128 rest
+uleb128 :: (Integral a, Bits a) => a -> Builder
+uleb128 n = case take7 n of
+              (byte,    0) -> word8 (toByte byte)
+              (byte, rest) -> word8 (markContinue (toByte byte)) <> uleb128 rest
 
 -- Int32 represents a signed 32-bit integer
 i32 :: Int32 -> Builder
@@ -158,8 +158,17 @@ i32 = ileb128
 ileb128 :: Integral a => a -> Builder
 ileb128 n = word8 (toByte n)
 
--- This is by no means safe as it will silently truncate the given integer to a
--- single byte.  Thus, the caller must ensure that the integer being passed can
--- already fit in one byte.
+-- Receives a number and returns a tuple where the first element is the least
+-- significant 7 bits packaged in a byte beginning with 0, and the second is the
+-- rest of the number with the least significant 7 bits "shifted off".
+take7 :: (Integral a, Bits a) => a -> (Word8, a)
+take7 n = (toByte n .&. 0b01111111, n .>>. 7)
+
+-- Mark the byte as not being the last
+markContinue :: Word8 -> Word8
+markContinue = (`setBit` 7)
+
+-- This will silently truncate the given integer to a single byte.  Thus, the
+-- caller must ensure that the integer being passed can already fit in one byte.
 toByte :: Integral a => a -> Word8
 toByte = fromIntegral
