@@ -151,12 +151,21 @@ uleb128 n = case take7 n of
 
 -- Int32 represents a signed 32-bit integer
 i32 :: Int32 -> Builder
-i32 = ileb128
+i32 = sleb128
 
 -- Similarly, this should be limited to only signed Integrals, but no such
 -- typeclass exists AFAIK.
-ileb128 :: Integral a => a -> Builder
-ileb128 n = word8 (toByte n)
+sleb128 :: (Integral a, Bits a) => a -> Builder
+sleb128 n = case take7 n of
+              -- A negative number that has been totally shifted away is -1
+              (byte,   -1) | isNegative     -> word8 (toByte byte)
+              -- A positive number that has been totally shifted away is 0
+              (byte,    0) | not isNegative -> word8 (toByte byte)
+              (byte, rest)                  -> word8 (markContinue (toByte byte)) <> sleb128 rest
+  -- Bits are 0-indexed, so bit 6 is the 7th bit; i.e. the first bit in a 7-bit
+  -- segment.  If this is the last segment, the first bit in this segment
+  -- indicates the sign for the entire number.
+  where isNegative = n `testBit` 6
 
 -- Receives a number and returns a tuple where the first element is the least
 -- significant 7 bits packaged in a byte beginning with 0, and the second is the
