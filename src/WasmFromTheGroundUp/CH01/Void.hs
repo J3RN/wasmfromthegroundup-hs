@@ -1,3 +1,5 @@
+module WasmFromTheGroundUp.CH01.Void (main) where
+
 import           Data.ByteString.Builder
 import           Prelude                 hiding (writeFile)
 

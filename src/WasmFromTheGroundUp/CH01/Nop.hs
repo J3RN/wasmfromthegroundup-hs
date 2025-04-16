@@ -1,7 +1,23 @@
+module WasmFromTheGroundUp.CH01.Nop ( Encode (..)
+                                    , Module (..)
+                                    , TypeSection (..)
+                                    , TypeEntry (..)
+                                    , Type (..)
+                                    , FunctionSection (..)
+                                    , FunctionEntry (..)
+                                    , ExportSection (..)
+                                    , ExportEntry (..)
+                                    , CodeSection (..)
+                                    , CodeEntry (..)
+                                    , Local (..)
+                                    , Instruction (..)
+                                    , main
+                                    ) where
+
 import           Data.Bits
 import           Data.ByteString.Builder
 import qualified Data.ByteString.Lazy    as B
-import           Data.Int                (Int32)
+import           Data.Int                (Int32, Int64)
 import           Data.Word               (Word32, Word8)
 import           Prelude                 hiding (writeFile)
 
@@ -16,8 +32,8 @@ data Module = Module { _typeSection     :: TypeSection
 
 newtype TypeSection = TypeSection { _typeSectionEntries :: [TypeEntry]}
 data TypeEntry = FunctionType { _paramTypes :: [Type], _returnTypes :: [Type]}
--- T is a placeholder; we don't have any types to encode yet
-data Type = T
+-- These are all added as part of CH02!
+data Type = I32 | I64 | F32 | F64
 
 newtype FunctionSection = FunctionSection { _functionSectionEntries :: [FunctionEntry]}
 newtype FunctionEntry = FunctionEntry { _functionIndex :: Word32 }
@@ -30,8 +46,13 @@ data CodeEntry = CodeEntry {_locals :: [Local], _instructions :: [Instruction]}
 -- L is also a placeholder as we haven't covered locals and do not know what
 -- they consist of as yet.
 data Local = L
--- We know only one instruction so far
+-- We know only one instruction in CH01
 data Instruction = End
+                 -- These ones are added in CH02
+                 | I32Const Int32
+                 | I64Const Int64
+                 | F32Const Float
+                 | F64Const Double
 
 main :: IO ()
 main = writeFile "out.wasm" (encode m)
@@ -86,9 +107,12 @@ instance Encode TypeEntry where
   encode (FunctionType {_paramTypes = pt, _returnTypes = rt}) =
     word8 0x60 <> encode pt <> encode rt
 
--- What types will be is unknown, we don't have to care just yet
 instance Encode Type where
-  encode T = mempty
+  -- These encodings are specified in CH02
+  encode I32 = word8 0x7F
+  encode I64 = word8 0x7E
+  encode F32 = word8 0x7D
+  encode F64 = word8 0x7C
 
 --- Function section encoding
 
@@ -133,7 +157,23 @@ instance Encode Local where
   encode L = mempty
 
 instance Encode Instruction where
-  encode End = word8 0x0b
+  encode End          = word8 0x0b
+  encode (I32Const i) = word8 0x41 <> encode i
+  encode (I64Const i) = word8 0x42 <> encode i
+  encode (F32Const f) = word8 0x43 <> encode f
+  encode (F64Const f) = word8 0x44 <> encode f
+
+instance Encode Int32 where
+  encode = i32
+
+instance Encode Int64 where
+  encode = sleb128
+
+instance Encode Float where
+  encode = floatLE
+
+instance Encode Double where
+  encode = doubleLE
 
 --- LEB128 encodings
 

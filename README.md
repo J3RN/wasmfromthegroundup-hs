@@ -5,17 +5,10 @@
 This is a collection of code from [WebAssembly from the Ground Up] ported from JavaScript and Ohm to Haskell.
 
 - Chapter 1: Minimum Viable Compiler
-  - [Void Lang](./01%20-%20Minimum%20Viable%20Compiler/Void.hs)
-  - [Nop Lang](./01%20-%20Minimum%20Viable%20Compiler/Nop.hs)
-
-## Running the examples
-
-This is not a Haskell "project", each file is dependency-free and can be run with `runhaskell` or compiled with `ghc`.
-
-e.g.
-```bash
-runhaskell ./01\ -\ Minimum\ Viable\ Compiler/Void.hs
-```
+  - [Void Lang](./src/WasmFromTheGroundUp/CH01/Void.hs)
+  - [Nop Lang](./src/WasmFromTheGroundUp/CH01/Nop.hs)
+- Chapter 2: 
+  - [Wafer](./src/WasmFromTheGroundUp/CH02/Wafer.hs)
 
 ## General Notes
 

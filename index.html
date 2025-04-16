@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WASM Result Testbench</title>
+    </head>
+    <body>
+        <script>
+         document.addEventListener("DOMContentLoaded", () => {
+             WebAssembly.instantiateStreaming(fetch("out.wasm")).then((res) => {
+                 console.log(`Main: ${res.instance.exports.main()}`)
+             });
+         });
+        </script>
+    </body>
+</html>
