@@ -54,8 +54,8 @@ data Instruction = End
                  | F32Const Float
                  | F64Const Double
 
-main :: IO ()
-main = writeFile "out.wasm" (encode m)
+main :: Builder
+main = encode m
   where m = Module { _typeSection = TypeSection [FunctionType [] []]
                    , _functionSection = FunctionSection [FunctionEntry 0]
                    , _exportSection = ExportSection [FunctionExport "main" 0]

@@ -67,15 +67,21 @@ test-suite wasmfromthegroundup-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      WasmFromTheGroundUp.CH01.NopSpec
+      WasmFromTheGroundUp.CH01.VoidSpec
+      WasmFromTheGroundUp.CH02.WaferSpec
       Paths_wasmfromthegroundup
   autogen-modules:
       Paths_wasmfromthegroundup
   hs-source-dirs:
       test
+  default-extensions:
+      OverloadedStrings
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , hspec
     , parsec
     , text
     , wasmfromthegroundup

@@ -64,3 +64,6 @@ tests:
       - -with-rtsopts=-N
     dependencies:
       - wasmfromthegroundup
+      - hspec
+    default-extensions:
+      - OverloadedStrings
