@@ -1,13 +1,13 @@
 module WasmFromTheGroundUp.CH02.WaferSpec (spec) where
 
-import qualified Data.ByteString.Builder as Builder
-import qualified Data.ByteString.Lazy as ByteString
-import Test.Hspec
+import qualified Data.ByteString.Builder        as Builder
+import qualified Data.ByteString.Lazy           as ByteString
+import           Test.Hspec
 import qualified WasmFromTheGroundUp.CH02.Wafer as Wafer
 
 spec :: Spec
 spec = describe "Wafer" $ do
-  describe "main" $ do
+  describe "compile" $ do
     it "should match the expected binary" $ do
       let exprectedBinary = ByteString.pack [0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7F, 0x03, 0x02, 0x01, 0x00, 0x07, 0x08, 0x01, 0x04, 0x6D, 0x61, 0x69, 0x6E, 0x00, 0x00, 0x0A, 0x06, 0x01, 0x4, 0x00, 0x41, 0x2A, 0x0B]
       let actualBinary = Builder.toLazyByteString <$> Wafer.compile "42"

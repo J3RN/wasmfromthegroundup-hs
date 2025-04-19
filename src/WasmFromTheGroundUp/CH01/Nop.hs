@@ -19,7 +19,6 @@ import           Data.ByteString.Builder
 import qualified Data.ByteString.Lazy    as B
 import           Data.Int                (Int32, Int64)
 import           Data.Word               (Word32, Word8)
-import           Prelude                 hiding (writeFile)
 
 data Module = Module { _typeSection     :: TypeSection
                      , _functionSection :: FunctionSection

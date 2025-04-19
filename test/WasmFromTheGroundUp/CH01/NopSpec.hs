@@ -1,8 +1,8 @@
 module WasmFromTheGroundUp.CH01.NopSpec (spec) where
 
-import qualified Data.ByteString.Builder as Builder
-import qualified Data.ByteString.Lazy as ByteString
-import Test.Hspec
+import qualified Data.ByteString.Builder      as Builder
+import qualified Data.ByteString.Lazy         as ByteString
+import           Test.Hspec
 import qualified WasmFromTheGroundUp.CH01.Nop as Nop
 
 spec :: Spec

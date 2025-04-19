@@ -1,8 +1,8 @@
 module WasmFromTheGroundUp.CH01.VoidSpec (spec) where
 
-import qualified Data.ByteString.Builder as Builder
-import qualified Data.ByteString.Lazy as ByteString
-import Test.Hspec
+import qualified Data.ByteString.Builder       as Builder
+import qualified Data.ByteString.Lazy          as ByteString
+import           Test.Hspec
 import qualified WasmFromTheGroundUp.CH01.Void as Void
 
 spec :: Spec

@@ -18,13 +18,13 @@ number = read <$> many1 digit
 compile :: Text -> Either Err Builder
 compile source = case parseResult of
   Right val -> Right (encode (modu val))
-  Left e -> Left (Error (show e))
+  Left e    -> Left (Error (show e))
   where
     parseResult = runParser main () "source" source
     modu val =
       Module
-        { _typeSection = TypeSection [FunctionType [] [I32]],
-          _functionSection = FunctionSection [FunctionEntry 0],
-          _exportSection = ExportSection [FunctionExport "main" 0],
-          _codeSection = CodeSection [CodeEntry [] [I32Const val, End]]
-                     }
+        { _typeSection = TypeSection [FunctionType [] [I32]]
+        , _functionSection = FunctionSection [FunctionEntry 0]
+        , _exportSection = ExportSection [FunctionExport "main" 0]
+        , _codeSection = CodeSection [CodeEntry [] [I32Const val, End]]
+        }

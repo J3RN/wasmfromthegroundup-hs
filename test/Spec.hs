@@ -1,8 +1,8 @@
-import qualified WasmFromTheGroundUp.CH01.VoidSpec as VoidSpec
-import qualified WasmFromTheGroundUp.CH01.NopSpec as NopSpec
+import qualified WasmFromTheGroundUp.CH01.NopSpec   as NopSpec
+import qualified WasmFromTheGroundUp.CH01.VoidSpec  as VoidSpec
 import qualified WasmFromTheGroundUp.CH02.WaferSpec as WaferSpec
 
-import Test.Hspec
+import           Test.Hspec
 
 main :: IO ()
 main = hspec spec
