@@ -27,6 +27,7 @@ library
       WasmFromTheGroundUp.CH01.Nop
       WasmFromTheGroundUp.CH01.Void
       WasmFromTheGroundUp.CH02.Wafer
+      WasmFromTheGroundUp.CH03.Wafer
   other-modules:
       Paths_wasmfromthegroundup
   autogen-modules:
@@ -69,6 +70,7 @@ test-suite wasmfromthegroundup-test
       WasmFromTheGroundUp.CH01.NopSpec
       WasmFromTheGroundUp.CH01.VoidSpec
       WasmFromTheGroundUp.CH02.WaferSpec
+      WasmFromTheGroundUp.CH03.WaferSpec
       Paths_wasmfromthegroundup
   autogen-modules:
       Paths_wasmfromthegroundup

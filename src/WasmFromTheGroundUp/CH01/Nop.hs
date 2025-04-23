@@ -52,6 +52,9 @@ data Instruction = End
                  | I64Const Int64
                  | F32Const Float
                  | F64Const Double
+                 -- Added in CH03
+                 | I32Add
+                 | I32Sub
 
 main :: Builder
 main = encode m
@@ -156,11 +159,13 @@ instance Encode Local where
   encode L = mempty
 
 instance Encode Instruction where
-  encode End          = word8 0x0b
+  encode End          = word8 0x0B
   encode (I32Const i) = word8 0x41 <> encode i
   encode (I64Const i) = word8 0x42 <> encode i
   encode (F32Const f) = word8 0x43 <> encode f
   encode (F64Const f) = word8 0x44 <> encode f
+  encode I32Add       = word8 0x6A
+  encode I32Sub       = word8 0x6B
 
 instance Encode Int32 where
   encode = i32
