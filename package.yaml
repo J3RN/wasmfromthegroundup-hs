@@ -66,3 +66,4 @@ tests:
       - hspec
     default-extensions:
       - OverloadedStrings
+      - BinaryLiterals

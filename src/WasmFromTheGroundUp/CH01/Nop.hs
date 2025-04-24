@@ -12,6 +12,8 @@ module WasmFromTheGroundUp.CH01.Nop ( Encode (..)
                                     , Local (..)
                                     , Instruction (..)
                                     , main
+                                    , sleb128
+                                    , uleb128
                                     ) where
 
 import           Data.Bits
@@ -202,20 +204,23 @@ i32 = sleb128
 sleb128 :: (Integral a, Bits a) => a -> Builder
 sleb128 n = case take7 n of
               -- A negative number that has been totally shifted away is -1
-              (byte,   -1) | isNegative     -> word8 (toByte byte)
+              (byte,   -1) | isNegative byte -> word8 byte
               -- A positive number that has been totally shifted away is 0
-              (byte,    0) | not isNegative -> word8 (toByte byte)
-              (byte, rest)                  -> word8 (markContinue (toByte byte)) <> sleb128 rest
+              (byte,    0) | isPositive byte -> word8 byte
+              (byte, rest)                   -> word8 (markContinue byte) <> sleb128 rest
   -- Bits are 0-indexed, so bit 6 is the 7th bit; i.e. the first bit in a 7-bit
   -- segment.  If this is the last segment, the first bit in this segment
-  -- indicates the sign for the entire number.
-  where isNegative = n `testBit` 6
+  -- indicates the sign for the entire number.  If the "sign" of this byte does
+  -- not match the remainder, another byte will be needed to attest the sign of
+  -- the number (e.g. see the test for 64).
+  where isNegative = (`testBit` 6)
+        isPositive = not . isNegative
 
 -- Receives a number and returns a tuple where the first element is the least
 -- significant 7 bits packaged in a byte beginning with 0, and the second is the
 -- rest of the number with the least significant 7 bits "shifted off".
 take7 :: (Integral a, Bits a) => a -> (Word8, a)
-take7 n = (toByte n .&. 0b01111111, n .>>. 7)
+take7 n = (toByte (n .&. 0b1111111), n .>>. 7)
 
 -- Mark the byte as not being the last
 markContinue :: Word8 -> Word8
