@@ -4,10 +4,12 @@
         <title>WASM Result Testbench</title>
     </head>
     <body>
+        <main></main>
         <script>
          document.addEventListener("DOMContentLoaded", () => {
              WebAssembly.instantiateStreaming(fetch("out.wasm")).then((res) => {
-                 console.log(`Main: ${res.instance.exports.main()}`)
+                 let main = document.getElementsByTagName("main")[0];
+                 main.innerHTML = `Main: ${res.instance.exports.main()}`;
              });
          });
         </script>

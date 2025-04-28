@@ -57,6 +57,8 @@ data Instruction = End
                  -- Added in CH03
                  | I32Add
                  | I32Sub
+                 | I32Mul
+                 | I32Div_s -- Signed division
 
 main :: Builder
 main = encode m
@@ -168,6 +170,8 @@ instance Encode Instruction where
   encode (F64Const f) = word8 0x44 <> encode f
   encode I32Add       = word8 0x6A
   encode I32Sub       = word8 0x6B
+  encode I32Mul       = word8 0x6C
+  encode I32Div_s     = word8 0x6D
 
 instance Encode Int32 where
   encode = i32

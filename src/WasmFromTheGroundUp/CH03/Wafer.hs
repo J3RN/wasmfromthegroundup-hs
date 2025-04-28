@@ -16,7 +16,7 @@ newtype Function = Function Expr
 data Expr = ELiteral Int32
           | EBinary Expr Op Expr
           deriving (Show, Eq)
-data Op = Add | Subtract
+data Op = Add | Subtract | Multiply | Divide
         deriving (Show, Eq)
 
 compile :: String -> Either Err Builder
@@ -41,16 +41,24 @@ instance Assemble Expr where
   assemble (EBinary l op r) = assemble l <> assemble r <> opCode op
     where opCode Add      = [I32Add]
           opCode Subtract = [I32Sub]
+          opCode Multiply = [I32Mul]
+          opCode Divide   = [I32Div_s]
 
 main :: Parser Function
-main = Function <$> expr
+main = Function <$> termExpr
 
-expr :: Parser Expr
-expr = (ELiteral <$> number) `chainl1` binaryExpr
+termExpr :: Parser Expr
+termExpr = factorExpr `chainl1` do op <- (symbol "+" $> Add) <|> (symbol "-" $> Subtract)
+                                   return (\l r -> EBinary l op r)
 
-binaryExpr :: Parser (Expr -> Expr -> Expr)
-binaryExpr = do op <- (symbol "+" $> Add) <|> (symbol "-" $> Subtract)
-                return (\l r -> EBinary l op r)
+-- I went a little above and beyond and made multiplication and division higher
+-- precedence
+factorExpr :: Parser Expr
+factorExpr = unaryExpr `chainl1` do op <- (symbol "*" $> Multiply) <|> (symbol "/" $> Divide)
+                                    return (\l r -> EBinary l op r)
+
+unaryExpr :: Parser Expr
+unaryExpr = parens termExpr <|> (ELiteral <$> number)
 
 -- Helpers
 
@@ -59,6 +67,9 @@ number = fromIntegral <$> Tok.integer wafer
 
 symbol :: String -> Parser String
 symbol = Tok.symbol wafer
+
+parens :: Parser a -> Parser a
+parens = Tok.parens wafer
 
 -- We convert the waferDef (declarative description of the syntax) to a token
 -- parser (includes helpful utilities and consumes whitespace between elements).
